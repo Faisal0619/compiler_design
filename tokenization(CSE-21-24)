@@ -1,0 +1,79 @@
+
+#include <stdio.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <string.h>
+
+// Function to check if a token is a C keyword
+bool isKeyword(const char *str) {
+    const char *keywords[] = {
+        "auto", "break", "case", "char", "const", "continue", "default", "do",
+        "double", "else", "enum", "extern", "float", "for", "goto", "if",
+        "inline", "int", "long", "register", "restrict", "return", "short",
+        "signed", "sizeof", "static", "struct", "switch", "typedef", "union",
+        "unsigned", "void", "volatile", "while"
+    };
+    int keywordCount = sizeof(keywords) / sizeof(keywords[0]);
+
+    for (int i = 0; i < keywordCount; i++) {
+        if (strcmp(str, keywords[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Function to check if a token is an identifier
+bool isIdentifier(const char *str) {
+    if (!isalpha(str[0]) && str[0] != '_') {
+        return false;
+    }
+    for (int i = 1; str[i] != '\0'; i++) {
+        if (!isalnum(str[i]) && str[i] != '_') {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Function to check if a token is an operator
+bool isOperator(const char *str) {
+    const char *operators[] = {
+        "+", "-", "*", "/", ">", "<", "=", "==", "!=", "<=", ">=", "&&", "||", "!"
+    };
+    int operatorCount = sizeof(operators) / sizeof(operators[0]);
+
+    for (int i = 0; i < operatorCount; i++) {
+        if (strcmp(str, operators[i]) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Function to tokenize input and classify tokens
+void tokenize(char *input) {
+   const char delimiters[] = " \t\n;(){}[]+-*/=<>&|!,";
+    char *token = strtok(input, delimiters);
+
+    printf("Tokens:\n");
+    while (token != NULL) {
+        if (isKeyword(token)) {
+            printf("'%s' is a keyword.\n", token);
+        } else if (isOperator(token)) {
+            printf("'%s' is an operator.\n", token);
+        } else if (isIdentifier(token)) {
+            printf("'%s' is an identifier.\n", token);
+        } else {
+            printf("'%s' is unknown.\n", token);
+        }
+        token = strtok(NULL, delimiters);
+    }
+}
+
+int main() {
+    char str[] = "if (a) ";
+    tokenize(str);
+    return 0;
+}
+
